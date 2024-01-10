@@ -10,20 +10,30 @@ namespace DevBlog_API.Controllers
 	//[ApiController]
 	public class BlogAPIController : ControllerBase
 	{
-		public ILogger<BlogAPIController> _Logger { get; }
+		private readonly ApplicationDbContext _db;
+		public BlogAPIController(ApplicationDbContext db) {
+		_db = db;
+		}
+
+
+		///////////////////////////////////////////////////////////////////////////
+		/*public ILogger<BlogAPIController> _Logger { get; }
 
 		public BlogAPIController(ILogger<BlogAPIController> logger)
         {
 			_Logger = logger;
-		}
+		}*/
+		////////////////////////////////////////////////////////////////////////////
 
         [HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 
 		public ActionResult<IEnumerable<BlogDTO>> GetBlogs()
 		{
-			_Logger.LogInformation("Getting all blogs");
-			return Ok(blogData.blogs);
+			//_Logger.LogInformation("Getting all blogs");
+			return Ok(_db.Blogs.ToList());
+
+			//return Ok(blogData.blogs);
 		}
 
 
@@ -38,10 +48,11 @@ namespace DevBlog_API.Controllers
 		{
 			if (id <= 0)
 			{
-				_Logger.LogInformation($"Error with Id {id}");
+				//_Logger.LogInformation($"Error with Id {id}");
 				return BadRequest();
 			}
-			var blog = blogData.blogs.FirstOrDefault(u => u.Id == id);
+			//var blog = blogData.blogs.FirstOrDefault(u => u.Id == id);
+			var blog = _db.Blogs.FirstOrDefault(u => u.Id == id);
 			if (blog == null)
 			{
 				return NotFound();
@@ -59,7 +70,9 @@ namespace DevBlog_API.Controllers
 			{
 				return BadRequest(ModelState);
 			}*/
-			if (blogData.blogs.FirstOrDefault(u => u.Title.ToLower() == blogDTO.Title.ToLower()) != null)
+			//if (blogData.blogs.FirstOrDefault(u => u.Title.ToLower() == blogDTO.Title.ToLower()) != null)
+			if (_db.Blogs.FirstOrDefault(u => u.Title.ToLower() == blogDTO.Title.ToLower()) != null)
+
 			{
 				ModelState.AddModelError(blogDTO.Title, "title already exits");
 				return BadRequest(ModelState);
@@ -68,12 +81,24 @@ namespace DevBlog_API.Controllers
 			{
 				return BadRequest(blogDTO);
 			}
-			if (blogDTO.Id > 0)
+			if (blogDTO.Id < 0)
 			{
 				return StatusCode(StatusCodes.Status500InternalServerError);
 			}
-			blogDTO.Id = blogData.blogs.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
-				blogData.blogs.Add(blogDTO);
+			//blogDTO.Id = blogData.blogs.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
+			//blogData.blogs.Add(blogDTO);
+
+			Blog model = new()
+			{
+				Title = blogDTO.Title,
+				PermaLink = blogDTO.PermaLink,
+				except = blogDTO.except,
+				Category = blogDTO.Category,
+				postImgPath = blogDTO.postImgPath,
+				Content = blogDTO.Content
+			};
+			_db.Blogs.Add(model);
+			_db.SaveChanges();
 
 			//return Ok(blog);
 			return CreatedAtRoute("GetBlog", new { id = blogDTO.Id }, blogDTO);
@@ -90,12 +115,15 @@ namespace DevBlog_API.Controllers
 			{
 				return BadRequest();
 			}
-			var blog = blogData.blogs.FirstOrDefault(u => u.Id == id);
+			//var blog = blogData.blogs.FirstOrDefault(u => u.Id == id);
+			var blog = _db.Blogs.FirstOrDefault(u => u.Id == id);
 			if (blog == null)
 			{
 				return NotFound();
 			}
-			blogData.blogs.Remove(blog);
+			//blogData.blogs.Remove(blog);
+			_db.Blogs.Remove(blog);
+			_db.SaveChanges();
 			return NoContent();
 		}
 
@@ -111,21 +139,32 @@ namespace DevBlog_API.Controllers
 			{
 				return BadRequest();
 			}
-			var blog = blogData.blogs.FirstOrDefault(u => u.Id==id);
-			if (blog == null)
+			//var blog = blogData.blogs.FirstOrDefault(u => u.Id==id);
+		/*	if (blog == null)
 			{
 				return NotFound();
-			}
+			}*/
 
-			blog.Title = updateBlog.Title;
+			/*blog.Title = updateBlog.Title;
 			blog.PermaLink = updateBlog.PermaLink;
 			blog.Category = updateBlog.Category;
-			blog.Content = updateBlog.Content;
+			blog.Content = updateBlog.Content;*/
 
+			Blog model = new()
+			{
+				Title = updateBlog.Title,
+				PermaLink = updateBlog.PermaLink,
+				except = updateBlog.except,
+				Category = updateBlog.Category,
+				postImgPath = updateBlog.postImgPath,
+				Content = updateBlog.Content
+			};
+			_db.Blogs.Update(model);
+			_db.SaveChanges();
 			return NoContent();
 		}
 
-		[HttpPatch("{id:int}/updateParial")]
+/*		[HttpPatch("{id:int}/updateParial")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -147,7 +186,7 @@ namespace DevBlog_API.Controllers
 				return BadRequest(ModelState);
 			}
 			return NoContent(); 
-		}
+		}*/
 	}
 
 }
