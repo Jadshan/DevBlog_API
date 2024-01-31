@@ -6,8 +6,8 @@ namespace DevBlog_API.Data
 	{
 		public static List<BlogDTO> blogs = new List<BlogDTO>
 		{
-			new BlogDTO{Id=1, Title="blog1", Category="Angular", Content="dfdfdfdfdf", PermaLink="fdsfdf"},
-			new BlogDTO{Id=2, Title="blog2", Category="dptNet", Content="dfdfdfdfdgfdfdf", PermaLink="fdsffgdf"}
+			new BlogDTO{Id=1, Title="blog1", Category="Angular", Content="dfdfdfdfdf"},
+			new BlogDTO{Id=2, Title="blog2", Category="dptNet", Content="dfdfdfdfdgfdfdf"}
 		};
 	}
 }

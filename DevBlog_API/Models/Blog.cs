@@ -9,15 +9,12 @@ namespace DevBlog_API.Models
 		//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 		public string Title { get; set; }
-		public string PermaLink { get; set; }
 		public string Category { get; set; }
 		public string Content { get; set; }
 		public string postImgPath { get; set; }
-		public string except { get; set;}
-		public bool isFeatured { get; set; }
+		public bool isFeatured { get; set; } = false;
 		public int views { get; set; }
-		public string status { get; set; } = "";
-		public DateTime createAt { get; set; }
+		public DateTime createdAt { get; set; } = DateTime.Now;
 
 	}
 }

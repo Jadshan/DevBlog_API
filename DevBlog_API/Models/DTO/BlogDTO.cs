@@ -9,14 +9,11 @@ namespace DevBlog_API.Models
 		[Required]
 		[MinLength(5)]
 		public string Title { get; set; }
-		public string PermaLink { get; set; }
-		public string except { get; set; }
 		public string Category { get; set; }
 		public string postImgPath { get; set; }
 		public string Content { get; set; }
-
-		
-		
+		public bool isFeatured { get; set; }
+		public int views { get; set; }
 
 	}
 }

@@ -64,7 +64,7 @@ namespace DevBlog_API.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public ActionResult<BlogDTO> crateBlog([FromBody] BlogDTO blogDTO)
+		public ActionResult<BlogDTO> crateBlog([FromBody]BlogDTO blogDTO)
 		{
 			/*if (!ModelState.IsValid)
 			{
@@ -90,12 +90,13 @@ namespace DevBlog_API.Controllers
 
 			Blog model = new()
 			{
+				Id = blogDTO.Id,
 				Title = blogDTO.Title,
-				PermaLink = blogDTO.PermaLink,
-				except = blogDTO.except,
 				Category = blogDTO.Category,
 				postImgPath = blogDTO.postImgPath,
-				Content = blogDTO.Content
+				Content = blogDTO.Content,
+				isFeatured = blogDTO.isFeatured,
+				views = blogDTO.views,
 			};
 			_db.Blogs.Add(model);
 			_db.SaveChanges();
@@ -129,11 +130,11 @@ namespace DevBlog_API.Controllers
 
 
 
-		[HttpPut("{id:int}")]
+		[HttpPut("{id:int}", Name = "updateBlog")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public ActionResult UpdateBlog(int id, [FromBody] BlogDTO updateBlog)
+		public ActionResult UpdateBlog(int id, [FromBody]BlogDTO updateBlog)
 		{
 			if (updateBlog == null || id != updateBlog.Id)
 			{
@@ -152,12 +153,13 @@ namespace DevBlog_API.Controllers
 
 			Blog model = new()
 			{
+				Id = updateBlog.Id,
 				Title = updateBlog.Title,
-				PermaLink = updateBlog.PermaLink,
-				except = updateBlog.except,
 				Category = updateBlog.Category,
 				postImgPath = updateBlog.postImgPath,
-				Content = updateBlog.Content
+				Content = updateBlog.Content,
+				isFeatured = updateBlog.isFeatured,
+				views = updateBlog.views,
 			};
 			_db.Blogs.Update(model);
 			_db.SaveChanges();
